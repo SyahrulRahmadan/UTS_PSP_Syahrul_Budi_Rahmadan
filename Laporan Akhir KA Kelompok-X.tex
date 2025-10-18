@@ -1,0 +1,352 @@
+\documentclass[a4paper,conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+
+% Tambahan
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{array}
+%\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+%% Header ==============================================
+\makeatletter
+ \let\old@ps@headings\ps@headings
+ \let\old@ps@IEEEtitlepagestyle\ps@IEEEtitlepagestyle
+ \def\confheader#1{%
+ % for all pages except the first
+ \def\ps@headings{%
+ \old@ps@headings%
+ \def\@oddhead{\strut\hfill#1\hfill\strut}%
+ \def\@evenhead{\strut\hfill#1\hfill\strut}%
+ }%
+ % for the first page
+ \def\ps@IEEEtitlepagestyle{%
+ \old@ps@IEEEtitlepagestyle%
+ \def\@oddhead{\strut\hfill#1\hfill\strut}%
+ \def\@evenhead{\strut\hfill#1\hfill\strut}%
+ }%
+ \ps@headings%
+ }
+ \makeatother
+
+\confheader{%
+ Ujian Tengah Semester, Pengantar Sistem Pintar, 2025/2026 Ganjil
+ }
+
+
+
+
+
+\begin{document}
+
+
+\title{Quality of Service (QoS) dalam Jaringan Kota Pintar
+
+%{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and should not be used}
+%\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{\IEEEauthorblockN{Yayan Rachmadianto Raharjo\IEEEauthorrefmark{1},
+Fitra Abdurrachman Bachtiar\IEEEauthorrefmark{1}}
+\IEEEauthorblockA{Informatics Department, Faculty of Computer Science, Brawijaya University\IEEEauthorrefmark{1}\\ 
+Information System Department, Faculty of Computer Science, \IEEEauthorrefmark{2} Brawijaya University\\
+email:  \IEEEauthorrefmark{1}yayan\_rr@student.ub.ac.id \IEEEauthorrefmark{1}fitra.bachtiar@ub.ac.id
+}}
+
+
+% The paper headers
+% The paper headers
+%\markboth{Ujian Tengah Semester, Pengantar Sistem Pintar, 2025/2026 Ganjil}
+
+\maketitle
+
+% ABSTRACT ==========================================
+\begin{abstract}
+
+Perkembangan pesat infrastruktur kota pintar (smart city) telah menciptakan ekosistem yang kompleks, di mana berbagai perangkat saling terhubung dan bertukar data untuk mendukung layanan publik seperti transportasi, keamanan, energi, dan kesehatan. Setiap layanan tersebut membutuhkan kinerja jaringan yang andal. Namun, meningkatnya volume dan keragaman lalu lintas data sering menyebabkan kemacetan jaringan, peningkatan latency, serta penurunan Quality of Service (QoS). Metode manajemen jaringan konvensional yang menggunakan aturan statis belum mampu beradaptasi terhadap kondisi jaringan yang dinamis dan heterogen di lingkungan kota pintar.
+Penelitian ini mengusulkan kerangka kerja optimasi QoS berbasis kecerdasan buatan (Artificial Intelligence/AI) yang mengintegrasikan Software Defined Networking (SDN) dan Edge Computing untuk mewujudkan pengelolaan sumber daya yang adaptif dan efisien. Sistem yang diusulkan terdiri atas empat lapisan, yaitu: persepsi (sensor IoT dan pengumpul data), pemrosesan tepi (edge processing), pengendali (SDN sebagai pengambil keputusan dinamis), dan cloud (penyimpanan data serta pelatihan model). Modul AI menggunakan algoritma Q-Learning dan Fuzzy Logic untuk menganalisis kondisi jaringan dan menentukan tindakan optimal seperti alokasi bandwidth, pemilihan rute, dan penentuan prioritas layanan.
+Melalui proses pembelajaran berkelanjutan, sistem ini dapat menyesuaikan perilakunya secara otomatis sesuai kondisi jaringan waktu nyata. Kerangka kerja ini diharapkan mampu menurunkan latency, kehilangan paket, serta menjaga distribusi sumber daya yang adil pada berbagai layanan kota pintar. Penelitian ini berkontribusi terhadap pengembangan manajemen jaringan adaptif berbasis data yang mampu mempertahankan stabilitas QoS dan mendukung keberlanjutan operasional kota pintar di masa depan.
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Optimasi Quality of Service (QOS), Jaringan Kota Pintar, Kecerdasan Buatan (AI), Software Defined Networking (SDN), Edge Computing 
+\end{IEEEkeywords}
+
+%% INTRODUCTION ============================================
+\section{Pendahuluan}
+
+Perkembangan kota pintar (smart city) telah berkembang pesat dalam beberapa tahun terakhir, seiring meningkatnya penggunaan teknologi \textit{Internet of Things} (IoT), \textit{edge computing}, dan kecerdasan buatan (Artificial Intelligence/AI). Teknologi-teknologi tersebut memungkinkan berbagai layanan kota—seperti pemantauan lalu lintas, keamanan publik, manajemen energi, dan layanan kesehatan—beroperasi secara terintegrasi dan berbasis data. Namun, peningkatan jumlah perangkat yang saling terhubung juga menimbulkan tantangan baru pada jaringan komunikasi, seperti kemacetan lalu lintas data, peningkatan latensi, kehilangan paket, serta ketidakstabilan \textit{Quality of Service} (QoS) \cite{ye2023}. Menjaga QoS yang andal menjadi hal penting karena setiap layanan kota pintar memiliki tingkat prioritas yang berbeda; misalnya, data darurat harus diprioritaskan dibandingkan dengan lalu lintas data umum.
+
+Metode manajemen jaringan konvensional masih bergantung pada konfigurasi statis yang kurang fleksibel untuk menyesuaikan diri terhadap kondisi jaringan yang dinamis dan heterogen. Untuk mengatasi keterbatasan tersebut, sejumlah penelitian telah mengusulkan penerapan sistem cerdas yang mampu mengambil keputusan secara otomatis dalam mengatur alokasi bandwidth, pemilihan rute, serta prioritas lalu lintas \cite{li2023}. Kombinasi antara \textit{Software Defined Networking} (SDN) dan AI memberikan peluang untuk mengelola sumber daya jaringan secara lebih efisien serta menanggapi kondisi jaringan secara waktu nyata.
+
+Beberapa penelitian sebelumnya telah membahas pendekatan berbeda untuk meningkatkan QoS pada jaringan cerdas. 
+\cite{rostami2024} melakukan tinjauan terhadap berbagai teknik \textit{load balancing} berbasis QoS menggunakan SDN pada lingkungan IoT, dan menyimpulkan bahwa pengendali SDN berperan penting dalam menjaga kinerja jaringan adaptif. 
+Sementara itu, \cite{herrera2023} mengusulkan kerangka kerja adaptasi \textit{Cloud}-\textit{IoT} yang mampu memindahkan aplikasi secara otomatis antara \textit{cloud} dan \textit{edge} untuk mempertahankan QoS saat terjadi fluktuasi trafik. 
+Selain itu, \cite{nong2025} mengembangkan model \textit{network slicing} pada jaringan 5G dengan fungsi bobot eksponensial dan logaritmik untuk meningkatkan \textit{throughput} dan mengurangi latensi.
+
+
+Meskipun berbagai pendekatan tersebut menunjukkan hasil yang menjanjikan, sebagian besar penelitian masih berfokus pada lingkungan jaringan tertentu seperti IoT, 5G, atau sistem \textit{cloud-edge}, tanpa menawarkan solusi terpadu untuk jaringan kota pintar yang memiliki beragam layanan dengan kebutuhan QoS berbeda. Oleh karena itu, penelitian ini mengusulkan suatu kerangka kerja optimasi QoS berbasis sistem cerdas yang mengintegrasikan AI, SDN, dan \textit{edge computing} untuk menghadirkan manajemen QoS yang adaptif, efisien, serta dapat diskalakan di lingkungan kota pintar.
+
+
+%% RELATED WORKS ===================================== (jika diperlukan)
+%\section{Related Works} 
+
+
+%% METHODOLOGY =====================================
+\section{Bagian metodologi usulan}
+
+Metodologi penelitian ini dirancang untuk mengembangkan sistem cerdas yang mampu mengoptimalkan Quality of Service (QoS) pada jaringan kota pintar secara adaptif. Pendekatan yang digunakan bersifat eksperimen terapan dengan fokus pada integrasi Artificial Intelligence (AI), Software Defined Networking (SDN), dan Edge Computing.
+Sistem ini diharapkan dapat memantau kondisi jaringan secara waktu nyata, menganalisis parameter QoS, serta menyesuaikan konfigurasi jaringan secara otomatis guna menjaga kestabilan layanan antar perangkat IoT di lingkungan kota pintar.
+
+Pada gambar \ref{fig:arsitektur} memperlihatkan rancangan arsitektur sistem cerdas yang diusulkan untuk optimasi Quality of Service (QoS) pada jaringan kota pintar. Arsitektur ini disusun secara berlapis untuk memastikan setiap proses pengumpulan data, analisis, pengambilan keputusan, dan pembelajaran berlangsung secara terstruktur dan efisien. Setiap lapisan memiliki fungsi yang saling terintegrasi, dimulai dari lapisan persepsi yang bertanggung jawab terhadap akuisisi data jaringan, hingga lapisan cloud yang berperan dalam analisis dan pembaruan model kecerdasan buatan.
+
+
+% Metodologi ------------------------------
+\begin{figure}[!tbhp]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Template UTS PSP 2025GA//20XX UTS MK-Judul//images/gambar 1. Komponen dan arsitektur .png}
+    \caption{Arsitektur Sistem}
+    \label{fig:arsitektur}
+\end{figure}
+
+
+%Further, Exploratory Data Analysis (EDA) was conducted which consists of exploring overall student emotion experience and page-specific emotion experience. 
+
+% Perception Layer -------------------------(jika ada bisa dijelaskan)
+\subsection{Perception Layer}
+Lapisan persepsi berperan sebagai titik awal dalam sistem cerdas yang diusulkan. Fungsi utamanya adalah mengumpulkan data dasar terkait kondisi jaringan dan lalu lintas komunikasi yang menjadi bahan analisis bagi lapisan berikutnya. Berbeda dengan rancangan sistem berskala besar, pada penelitian ini pengumpulan data dibatasi hanya pada parameter utama QoS dan log jaringan sederhana, agar sistem tetap efisien dan mudah diimplementasikan dalam tahap simulasi.
+
+Lapisan persepsi berfungsi sebagai tahap awal dalam sistem cerdas yang diusulkan. 
+Peran utamanya adalah untuk mengumpulkan data dasar yang berkaitan dengan kondisi jaringan dan lalu lintas komunikasi. 
+Pada penelitian ini, proses pengumpulan data dibatasi agar sistem tetap efisien dan mudah diimplementasikan pada tahap simulasi. 
+Data dikumpulkan dari perangkat jaringan seperti \textit{router}, \textit{switch}, dan sensor IoT sederhana (misalnya sensor lalu lintas atau \textit{gateway}). 
+Perangkat tersebut dipilih karena mampu menyediakan informasi performa jaringan secara waktu nyata tanpa memerlukan sistem sensor yang kompleks.
+
+Secara umum, jenis data yang dikumpulkan pada \textit{Perception Layer} dibatasi menjadi tiga kategori utama:
+
+\begin{enumerate}
+    \item \textbf{Data Kinerja Jaringan (Network Performance Data)} \\
+    Data ini merepresentasikan parameter dasar yang digunakan untuk menilai kualitas layanan (QoS) jaringan, meliputi:
+    \begin{itemize}
+        \item \textit{Latency} – waktu rata-rata yang dibutuhkan paket data untuk mencapai tujuan (ms).
+        \item \textit{Packet Loss} – persentase paket data yang hilang selama proses transmisi.
+        \item \textit{Throughput} – kecepatan rata-rata transfer data per detik (Mbps). 
+    \end{itemize}
+    Ketiga metrik tersebut sudah cukup untuk menggambarkan kondisi jaringan dan menjadi fokus utama dalam proses optimasi QoS.
+
+    \item \textbf{Data Log Perangkat (Device Status Log)} \\
+    Data ini mencatat kondisi dan aktivitas perangkat jaringan. Informasi yang dikumpulkan antara lain:
+    \begin{itemize}
+        \item Status konektivitas perangkat (aktif/tidak aktif).
+        \item Penggunaan bandwidth per perangkat.
+        \item Waktu aktif (\textit{uptime}) dari router atau sensor.
+    \end{itemize}
+    Data ini membantu sistem dalam mendeteksi gangguan lokal, seperti perangkat yang tidak merespons atau kelebihan beban trafik.
+
+    \item \textbf{Klasifikasi Jenis Trafik (Traffic Category)} \\
+    Kategori ini digunakan untuk membedakan prioritas pengiriman data dalam jaringan kota pintar:
+    \begin{itemize}
+        \item \textit{Real-time traffic}: mencakup data video, sensor darurat, atau komunikasi dengan prioritas tinggi.
+        \item \textit{Non-real-time traffic}: meliputi data periodik seperti laporan sensor lingkungan.
+    \end{itemize}
+    Klasifikasi ini memungkinkan sistem AI di lapisan kontrol untuk menentukan prioritas layanan secara efisien tanpa memerlukan analisis yang kompleks.
+\end{enumerate}
+
+Seluruh data dikirim secara periodik melalui \textit{gateway IoT} ke lapisan tepi (\textit{Edge Layer}) menggunakan protokol komunikasi ringan seperti MQTT. 
+Sebelum diteruskan, data akan melalui proses sederhana berupa \textit{filtering} dan \textit{normalisasi} untuk memastikan format dan satuan data tetap konsisten. 
+Dengan pembatasan ini, sistem tetap efisien, mudah disimulasikan, namun tetap mampu menyediakan informasi yang relevan bagi proses analisis dan pengambilan keputusan pada lapisan berikutnya.
+
+
+%% EDGE LAYER =======================================================
+\subsection{Edge Layer}
+
+\textit{Edge Layer} merupakan lapisan yang ditempatkan di dekat sumber data, seperti \textit{gateway}, \textit{access point}, atau server lokal. 
+Lapisan ini berfungsi sebagai titik pemrosesan awal sebelum data dikirim ke pusat kendali atau \textit{cloud}. 
+Tujuan utamanya adalah mengurangi latensi, menekan beban komunikasi, dan memungkinkan pengambilan keputusan cepat di tingkat lokal agar layanan penting tetap berfungsi saat koneksi ke \textit{cloud} terganggu.
+
+Fungsi utama lapisan ini meliputi:
+\begin{itemize}
+    \item \textbf{Pra-pemrosesan Data:} membersihkan dan menormalisasi data untuk menghilangkan duplikasi, memperbaiki format waktu, serta menyesuaikan satuan.
+    \item \textbf{Analisis Trafik Lokal:} memantau metrik QoS seperti \textit{latency}, \textit{throughput}, dan \textit{packet loss} guna mendeteksi lonjakan atau anomali.
+    \item \textbf{Keputusan Cepat:} mengambil tindakan lokal seperti pengalihan rute atau penundaan trafik non-kritis ketika kondisi jaringan melewati ambang batas tertentu.
+    \item \textbf{Agregasi Data:} merangkum data menjadi nilai rata-rata atau maksimum sebelum dikirim ke lapisan atas untuk efisiensi bandwidth.
+\end{itemize}
+
+Komponen utama pada \textit{Edge Layer} mencakup:
+\begin{itemize}
+    \item \textbf{Local Data Preprocessor} untuk pembersihan dan agregasi data.
+    \item \textbf{Traffic Analyzer} untuk pemantauan QoS lokal.
+    \item \textbf{Local Decision Module} sebagai pengambil keputusan cepat berbasis aturan atau AI ringan.
+    \item \textbf{Communications Interface} sebagai penghubung dengan \textit{Control Layer}.
+\end{itemize}
+
+Secara keseluruhan, \textit{Edge Layer} bertindak sebagai pengolah data awal yang responsif dan efisien, menjaga stabilitas layanan serta mendukung proses optimasi QoS di jaringan kota pintar.
+
+
+
+%% CONTROL LAYER =======================================================
+\subsection{Control Layer}
+
+\textit{Control Layer} berfungsi sebagai pusat kendali dan pengambilan keputusan dalam sistem cerdas optimasi \textit{Quality of Service} (QoS). 
+Lapisan ini mengintegrasikan \textit{Software Defined Networking} (SDN) dan kecerdasan buatan (AI) untuk mengatur aliran data serta menetapkan kebijakan jaringan secara adaptif.
+
+Komponen utama pada lapisan ini meliputi:
+
+\begin{itemize}
+    \item \textbf{SDN Controller} -- bertugas mengatur konfigurasi jaringan melalui protokol seperti \textit{OpenFlow}, memungkinkan kontrol terpusat dan fleksibel terhadap perangkat jaringan.
+    \item \textbf{AI Decision Engine} -- menganalisis data dari \textit{Edge Layer} menggunakan algoritme seperti \textit{Deep Reinforcement Learning} atau \textit{Fuzzy Logic} untuk menentukan tindakan optimal sesuai kondisi jaringan.
+    \item \textbf{QoS Manager} -- mengatur prioritas layanan, alokasi bandwidth, serta menentukan rute pengiriman data agar performa jaringan tetap stabil dan efisien.
+    \item \textbf{Policy Database} -- menyimpan aturan, log keputusan, dan kebijakan QoS yang diperbarui secara dinamis berdasarkan hasil analisis dan evaluasi sistem.
+\end{itemize}
+
+Lapisan ini berfungsi sebagai penghubung strategis antara pemrosesan cepat di \textit{Edge Layer} dan analisis jangka panjang di \textit{Cloud Layer}. 
+Dengan demikian, setiap keputusan yang dihasilkan bersifat efisien, adaptif, serta kontekstual terhadap dinamika jaringan yang selalu berubah.
+
+%% CLOUD LAYER =======================================================
+\subsection{Cloud Layer}
+
+\textit{Cloud Layer} merupakan lapisan paling atas dalam arsitektur sistem cerdas optimasi \textit{Quality of Service} (QoS) pada jaringan kota pintar. 
+Lapisan ini berfungsi sebagai pusat analisis dan pembelajaran jangka panjang, tempat data dari seluruh lapisan bawah dikumpulkan untuk diolah menjadi pengetahuan baru.
+
+Fungsi utama dari lapisan ini mencakup:
+
+\begin{itemize}
+    \item \textbf{Penyimpanan Data Historis (Data Warehouse)} -- 
+    Menyimpan catatan performa jaringan, log keputusan, serta parameter QoS dari berbagai wilayah secara terpusat agar dapat dianalisis lebih lanjut.
+
+    \item \textbf{Pelatihan Model AI (Model Trainer)} -- 
+    Melatih dan memperbarui model kecerdasan buatan berdasarkan data historis agar sistem dapat menyesuaikan diri dengan pola trafik terbaru dan kondisi jaringan yang berubah.
+
+    \item \textbf{Evaluasi Kinerja Sistem (Performance Monitor)} -- 
+    Menganalisis efektivitas kebijakan QoS yang telah diterapkan serta memberikan umpan balik kepada \textit{Control Layer} untuk peningkatan strategi optimasi jaringan.
+
+    \item \textbf{Visualisasi dan Laporan (System Dashboard)} -- 
+    Menyajikan hasil analisis serta status jaringan melalui tampilan antarmuka visual yang dapat diakses oleh operator atau administrator jaringan untuk keperluan monitoring dan evaluasi.
+\end{itemize}
+
+Dengan demikian, \textit{Cloud Layer} berperan sebagai memori sekaligus pusat pembelajaran adaptif bagi keseluruhan sistem, 
+memastikan setiap kebijakan jaringan yang diterapkan didasarkan pada data aktual, hasil analisis yang terukur, dan pembelajaran berkelanjutan.
+
+
+
+
+%% Results and Discussion =========================
+\section{Results and Discussion}
+
+%%=========================================================
+\subsection{Arsitektur Hybrid Modular Multi-Agent}
+
+Berdasarkan pada gambar \ref{fig:arsitektur} , sistem pintar yang diusulkan pada penelitian ini menggunakan pendekatan 
+\textbf{hybrid modular multi-agent architecture}. 
+Pendekatan ini merupakan kombinasi antara \textit{multi-agent system}, 
+yang menekankan pada koordinasi dan otonomi antar node, 
+dengan \textit{modular architecture}, 
+yang memudahkan proses integrasi dan pengembangan antar komponen sistem.
+
+Setiap agen dalam arsitektur ini memiliki tanggung jawab spesifik sesuai dengan fungsi lapisannya. 
+Meskipun bekerja secara mandiri, agen-agen tersebut tetap berkomunikasi dan berkoordinasi melalui 
+mekanisme pertukaran data.
+
+\begin{figure}[!tbhp]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Template UTS PSP 2025GA//20XX UTS MK-Judul//images/Gambar 2. keterkaitan komponen (1).png}
+    \caption{Keterkaitan Komponen}
+    \label{fig:keterkaitan_komponen}
+\end{figure}
+
+Sistem pintar yang diusulkan sesuai dengan gambar \ref{fig:keterkaitan_komponen}   berinteraksi secara terintegrasi dengan sensor, modul kecerdasan buatan (AI), serta sistem eksternal seperti API, basis data, dan \textit{cloud} melalui mekanisme komunikasi dua arah yang aman dan efisien. 
+Sensor jaringan seperti \textit{router}, \textit{access point}, dan \textit{IoT probe} mengirimkan data utama terkait \textit{Quality of Service} (QoS)—meliputi \textit{latency}, \textit{throughput}, dan \textit{packet loss}—ke \textit{Edge Layer} untuk diproses dan disaring sebelum diteruskan ke lapisan kontrol. 
+Pada \textit{Control Layer}, modul AI seperti \textit{Deep Reinforcement Learning} dan \textit{Fuzzy Logic} menganalisis data tersebut untuk menghasilkan kebijakan optimasi yang adaptif, yang kemudian diimplementasikan oleh pengendali SDN terhadap perangkat jaringan. 
+Selanjutnya, hasil keputusan dan data performa dikirim ke \textit{Cloud Layer} melalui API untuk disimpan, dianalisis, dan digunakan dalam pembaruan model AI. 
+Melalui integrasi berkelanjutan antara sensor, modul AI, dan sistem eksternal, sistem ini mampu menjaga kestabilan QoS secara dinamis dan meningkatkan adaptivitas jaringan kota pintar terhadap perubahan kondisi trafik.
+
+%%=========================================================
+\subsection{Metode dan Algoritme Sistem Pintar Berbasis Deep Reinforcement Learning (DRL)}
+
+Metode utama yang digunakan dalam sistem ini adalah \textit{Deep Reinforcement Learning} (DRL), yaitu pengembangan dari \textit{Reinforcement Learning} (RL) klasik yang mengombinasikan pembelajaran berbasis pengalaman dengan kemampuan pemodelan dari jaringan saraf tiruan. DRL memungkinkan agen cerdas untuk mempelajari pola keputusan secara adaptif melalui interaksi berulang dengan lingkungan jaringan yang dinamis, dengan tujuan mempertahankan \textit{Quality of Service} (QoS) yang optimal dalam jaringan kota pintar. Pendekatan ini terbukti efektif dalam mengatur alokasi sumber daya dan kebijakan jaringan yang kompleks, sebagaimana ditunjukkan oleh penelitian sebelumnya \cite{ye2023}.
+
+
+Dalam sistem yang diusulkan, modul DRL ditempatkan pada \textit{Control Layer} melalui komponen \textit{AI Decision Engine}. Modul ini menerima data QoS dari \textit{Edge Layer} (misalnya nilai \textit{latency}, \textit{throughput}, dan \textit{packet loss}) dan menghasilkan kebijakan jaringan adaptif seperti pengaturan jalur rute dan prioritas trafik. Kebijakan tersebut dikirim ke pengendali SDN untuk diterapkan langsung pada jaringan. Data hasil implementasi dan \textit{reward} yang diperoleh disimpan di \textit{Cloud Layer} untuk memperbarui model pembelajaran secara berkelanjutan. Pendekatan ini sejalan dengan hasil penelitian oleh \cite{li2023} yang menunjukkan bahwa metode DRL mampu meningkatkan efisiensi jaringan dan mengurangi latensi secara signifikan pada sistem berbasis \textit{edge computing} dan SDN.
+
+\begin{figure}[!tbhp]
+    \centering
+    \includegraphics[width=0.25\linewidth]{Template UTS PSP 2025GA//20XX UTS MK-Judul//images/gambar 3. proses drl.png}
+    \caption{Diagram Flow Deep Reinforce Learning}
+    \label{fig:drl}
+\end{figure}
+
+Proses \textit{workflow} model Deep Reinforcement Learning (DRL) gambar \ref{fig:drl} pada sistem pintar optimasi Quality of Service (QoS) jaringan kota pintar dimulai dengan tahap inisiasi sistem, di mana agen cerdas dan parameter pembelajaran seperti learning rate dan discount factor diatur. Setelah sistem diaktifkan, agen melakukan observasi lingkungan dengan mengumpulkan informasi kondisi jaringan, seperti latency, throughput, dan packet loss, yang direpresentasikan sebagai state. Berdasarkan kondisi tersebut, agen melakukan pemilihan aksi (action selection) untuk menentukan langkah terbaik, misalnya menyesuaikan alokasi bandwidth atau mengubah rute data. Aksi yang terpilih kemudian dieksekusi oleh SDN Controller, yang menerapkan kebijakan tersebut secara langsung ke jaringan. Setelah aksi dilakukan, sistem masuk ke tahap evaluasi reward, yaitu menghitung nilai umpan balik berdasarkan hasil perubahan metrik QoS. Nilai reward ini menunjukkan apakah keputusan yang diambil memperbaiki atau menurunkan performa jaringan. Selanjutnya dilakukan pembaruan model DRL, di mana nilai tindakan (Q-value) diperbarui menggunakan persamaan pembelajaran agar sistem dapat memperbaiki kebijakan pada iterasi berikutnya. Tahap berikutnya adalah evaluasi dan adaptasi model, di mana performa model dievaluasi secara berkala berdasarkan data historis dan pola trafik yang berubah. Hasil evaluasi ini kemudian dikirim sebagai umpan balik (feedback) ke lapisan Edge dan Cloud untuk memperbarui model pembelajaran secara berkelanjutan. Siklus proses ini berjalan terus-menerus, sehingga sistem dapat belajar dari pengalaman sebelumnya dan mempertahankan QoS jaringan secara adaptif dan efisien dalam berbagai kondisi operasional kota pintar.
+
+%%=========================================================
+\subsection{Platform, Framework, dan Tools dalam Sistem}
+
+\begin{figure}[!tbhp]
+    \centering
+    \includegraphics[width=0.25\linewidth]{Template UTS PSP 2025GA//20XX UTS MK-Judul//images/Peran perangkat lunak.png}
+    \caption{Hubungan Antar Platform, Framework, Tools}
+    \label{fig:platform}
+\end{figure}
+
+Sistem pintar untuk optimasi \textit{Quality of Service} (QoS) pada jaringan kota pintar dibangun menggunakan beberapa perangkat lunak yang saling terintegrasi secara modular. Hubungan antar komponen ini dirancang agar setiap lapisan sistem—mulai dari sensor hingga \textit{cloud}—dapat berinteraksi melalui mekanisme komunikasi dua arah yang aman, efisien, dan fleksibel.
+
+Pada \textit{Perception Layer}, data jaringan dikumpulkan oleh sensor atau \textit{IoT device} yang memantau parameter QoS seperti \textit{latency}, \textit{throughput}, dan \textit{packet loss}. Data ini dikirimkan dalam format JSON menggunakan protokol MQTT menuju \textit{Edge Layer}, di mana \textit{Node-RED} berperan sebagai platform integrasi dan pra-pemrosesan data. Node-RED mengubah data mentah menjadi format terstruktur, menghapus duplikasi, serta menyiapkan data untuk dikirimkan ke modul kendali jaringan.
+
+Pada \textit{Control Layer}, \textit{Ryu SDN Controller} bertindak sebagai pengendali utama jaringan yang menerima data dari \textit{Edge Layer} dan berkomunikasi langsung dengan modul kecerdasan buatan yang dibangun menggunakan \textit{TensorFlow}. Modul \textit{AI Decision Engine} yang berbasis \textit{Deep Reinforcement Learning} (DRL) menganalisis kondisi jaringan terkini dan menghasilkan kebijakan adaptif, seperti penyesuaian rute data atau alokasi bandwidth. Keputusan ini kemudian dikirim kembali ke \textit{Ryu Controller} untuk diterapkan melalui protokol \textit{OpenFlow} pada topologi jaringan virtual yang dijalankan di \textit{Mininet}.
+
+Hasil dari setiap aksi jaringan, termasuk perubahan QoS dan nilai \textit{reward} DRL, disimpan dalam \textit{InfluxDB} sebagai basis data deret waktu (\textit{time-series database}). Data historis ini digunakan untuk analisis performa serta pelatihan ulang model AI di \textit{Cloud Layer}. Untuk memudahkan pemantauan sistem, \textit{Grafana} digunakan sebagai platform visualisasi yang menampilkan parameter QoS dan kinerja model secara waktu nyata. Administrator jaringan dapat mengakses dasbor ini untuk memantau hasil pengambilan keputusan AI dan efektivitas kebijakan yang diterapkan.
+
+Seluruh komponen berkomunikasi menggunakan API berbasis REST dan format data ringan seperti JSON, yang menjamin interoperabilitas antar platform tanpa ketergantungan pada bahasa pemrograman tertentu. Selain itu, adaptivitas sistem dijaga melalui mekanisme pembaruan model DRL yang dilakukan secara berkala di \textit{Cloud Layer} berdasarkan data historis dari \textit{InfluxDB}. Arsitektur ini memastikan sistem tetap responsif terhadap perubahan kondisi jaringan dan mampu mempertahankan performa QoS secara efisien dalam berbagai skenario operasi.
+
+
+\noindent
+\textbf{Alur komunikasi antar komponen sistem dapat diringkas sebagai berikut:}
+\begin{enumerate}
+    \item \textbf{Sensor / IoT Device} – Mengirimkan data QoS (\textit{latency}, \textit{throughput}, \textit{packet loss}) melalui protokol MQTT.
+    \item \textbf{Node-RED (Edge Layer)} – Melakukan pra-pemrosesan dan meneruskan data ke broker MQTT atau langsung ke kontroler SDN.
+    \item \textbf{Ryu SDN Controller} – Mengatur lalu lintas jaringan dan berinteraksi dengan modul DRL di TensorFlow.
+    \item \textbf{TensorFlow (AI Engine)} – Menganalisis data QoS dan menentukan kebijakan adaptif untuk optimasi jaringan.
+    \item \textbf{InfluxDB (Database)} – Menyimpan hasil pengamatan dan nilai \textit{reward} untuk pembelajaran berkelanjutan.
+    \item \textbf{Grafana (Dashboard)} – Menampilkan hasil pemantauan QoS dan performa sistem secara waktu nyata.
+    \item \textbf{Cloud Feedback} – Mengirimkan pembaruan model dan kebijakan baru kembali ke \textit{Control Layer}.
+\end{enumerate}
+
+Dengan desain modular ini, seluruh proses dari pengumpulan data hingga pengambilan keputusan berlangsung secara otomatis, terukur, dan adaptif. Setiap perangkat lunak memiliki fungsi spesifik namun saling melengkapi untuk membentuk sistem cerdas yang efisien dalam mempertahankan performa QoS jaringan kota pintar.
+
+
+
+%Blibliography ================================
+\bibliographystyle{IEEEtran}
+\bibliography{references.bib}
+
+
+%% AUTHOR PROFILE ============================
+\section*{Authors}
+\vspace{-9em} % Kurangi jarak setelah judul "Authors"
+%% Proil Author 1
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Template UTS PSP 2025GA/20XX UTS MK-Judul/images/yayan.jpg}}]{Yayan Rachmadianto Raharjo}
+Yayan menyelesaikan studi pendidikan Sarjana Sains Terapan (D4) di Jurusan Teknik Elektro konsentrasi Jaringan Telekomunikasi Digital, Politeknik Negeri Malang pada tahun 2021. Saat ini sedang menempug pendidikan Magister (S2) di Fakultas Ilmu Komputer, Universitas Brawijaya.
+\end{IEEEbiography}
+\vspace{-7em} % Kurangi jarak setelah judul "Authors"
+%% Proil Author 2
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Template UTS PSP 2025GA/20XX UTS MK-Judul/images/profil_pak_fitra.jpg}}]{Fitra A. Bachtiar}
+Fitra lahir di Magelang, Jawa Tengah. Menyelesaikan pendidikan Sarjana (S1) konsentrasi Informatika di Jurusan Teknik Elektro, Universitas Brawijaya pada tahun 2008. Selanjutnya menyelesaikan Pendidikan Magister (S2) di bidang Human Information Science, Graduate School of Science and Engineering, Ritsumeikan University, Jepang pada tahun 2011. Sedangkan pendidikan Doktor (S3) di bidang Human Information Science, Graduate School of Information Science and Engineering, Ritsumeikan University, Jepang diselesaikan pada tahun 2016. Keminatan utama penelitian Fitra A. Bachtiar pada bidang Affective Computing.
+\end{IEEEbiography}
+
+
+
+
+\end{document}
